@@ -21,7 +21,7 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
-public class CalendarQuickstart {
+public class CalendarInfo {
     private static final String APPLICATION_NAME = "Google Calendar API Java Quickstart";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String CREDENTIALS_FOLDER = "credentials"; // Directory to store user credentials.
@@ -41,7 +41,7 @@ public class CalendarQuickstart {
      */
     private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
         // Load client secrets.
-        InputStream in = CalendarQuickstart.class.getResourceAsStream(CLIENT_SECRET_DIR);
+        InputStream in = CalendarInfo.class.getResourceAsStream(CLIENT_SECRET_DIR);
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
@@ -60,7 +60,7 @@ public class CalendarQuickstart {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
 
-        // List the next 10 events from the primary calendar.
+        // List the next 50 events from the primary calendar.
         DateTime now = new DateTime(System.currentTimeMillis());
         Events events = service.events().list("primary")
                 .setMaxResults(50)
@@ -81,5 +81,13 @@ public class CalendarQuickstart {
                 System.out.printf("%s (%s)\n", event.getSummary(), start);
             }
         }
+        //Needs valid credentials!!
+        Calendar service = new Calendar.Builder(httpTransport, jsonFactory, credentials)
+                .setApplicationName("applicationName").build();
+
+        // Retrieve an event
+        Event event = service.events().get('primary', "eventId").execute();
+
+        System.out.println(event.getSummary());
     }
 }
